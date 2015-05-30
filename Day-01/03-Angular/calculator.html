@@ -9,20 +9,49 @@
             font-size: 28pt;
         }
     </style>
+    <script src="angular.min.js"></script>
+    <script>
+        var calculatorApp = angular.module("calculatorApp",[]);
+        var calculator = {
+            '+' : function(number1, number2){
+                return number1 + number2;
+            },
+            '-' : function(number1, number2){
+                return number1 - number2;
+            },
+            '*' : function(number1, number2){
+                return number1 * number2;
+            },
+            '/' : function(number1, number2){
+                return number1 / number2;
+            }
+        };
+        calculatorApp.controller("calculatorController", function($scope){
+            $scope.number1 = 0;
+            $scope.number2 = 0;
+            $scope.calculate = function(){
+                $scope.expr = $scope.number1 + $scope.operation + $scope.number2
+               $scope.result = eval($scope.expr);
+            }
+            $scope.operation = '';
+            $scope.result = 0;
+        })
+    </script>
 </head>
-<body>
+<body ng-app="calculatorApp">
     <h1>Calculator</h1>
-    <div class="content">
-        <input type="text" name="" id="txtNumber1">
-        <select name="" id="selectOperator">
-            <option value="">add</option>
-            <option value="">subtract</option>
-            <option value="">multiply</option>
-            <option value="">divide</option>
+    <div class="content" ng-controller="calculatorController">
+        <input type="text" name="" id="txtNumber1" ng-model="number1">
+        <select name="" id="selectOperator" ng-model="operation">
+            <option value="+">add</option>
+            <option value="-">subtract</option>
+            <option value="*">multiply</option>
+            <option value="/">divide</option>
         </select>
-        <input type="text" name="" id="txtNumber2">
-        <input type="button" value="Calculate" id="btnCalculate">
-        <div id="divResult">[Result]</div>
+        <input type="text" name="" id="txtNumber2" ng-model="number2">
+        <input type="button" value="Calculate" id="btnCalculate" ng-click="calculate()">
+        <h3 ng-bind="expr"></h3>
+        <div id="divResult" ng-bind="result">[Result]</div>
     </div>
 </body>
 </html>
