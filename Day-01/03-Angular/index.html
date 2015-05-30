@@ -35,52 +35,16 @@
             this.salary = gross * ((100-this.tax.toInt())/100);
         }
 
+        var calculatorApp = angular.module("calculatorApp", []);
+        calculatorApp.run(function($rootScope){
+            $rootScope.calculator = new SalaryCalculator();
+        });
 
 
-
-       $(function(){
-           angular.bootstrap(document.body,[]);
-           window.scope = angular.element(document.body).scope();
-
-           var calculator = scope.calculator = new SalaryCalculator();
-
-          /* $("*[app-model]").each(function(index, element){
-               var $element = $(element);
-               var model = $element.attr("app-model")
-               $element.change(function(){
-                   scope.$apply(function(){
-                        var expr = model + " = '" + this.value + "'";
-                        scope.$eval(expr);
-                   }.bind(this));
-               });
-               scope.$watch(model, function(newValue, oldValue){
-                   $element.val(newValue);
-               });
-           });
-
-           $("*[app-click]").each(function(index, element){
-               var $element = $(element);
-               var expr = $element.attr("app-click");
-               $element.click(function(){
-                   scope.$apply(function(){
-                      scope.$eval(expr);
-                   });
-               });
-           });
-
-           $("*[app-bind]").each(function(index, element){
-               var $element = $(element);
-               var model = $element.attr("app-bind")
-               scope.$watch(model, function(newValue, oldValue){
-                   $element.html(newValue);
-               });
-           });
-*/
-       });
 
     </script>
 </head>
-<body>
+<body ng-app="calculatorApp">
     <h1>Salary Calculator</h1>
     <div class="content" id="view1">
         <div class="field">
