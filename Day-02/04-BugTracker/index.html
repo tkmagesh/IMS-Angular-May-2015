@@ -12,7 +12,7 @@
     5. Display stats (# of closed bugs / total # of bugs) - done
     6. Search for the bugs - done
     7. Sort the bugs - (Home Work - 1)
-    8. Persist the bugs in localStorage
+    8. Persist the bugs in localStorage - done
     9. Display "created date"
     10. Persist the bugs in the server
     11. Add support for create/update/delete "projects
@@ -55,14 +55,36 @@
         }
     </style>
     <script src="angular.min.js"></script>
+    <script src="moment.js"></script>
+
     <script>
-        var bugTrackerApp = angular.module("bugTrackerApp", []);
+
+        var utils = angular.module("utils", []);
+        utils.value("appDefaults", {defaultTrimTextLimit : 40});
+
+        utils.filter("trimText", function(appDefaults){
+            return function(data, limit){
+                limit = limit || appDefaults.defaultTrimTextLimit;
+                return data.length > limit ? data.substr(0,limit) + '...' : data;
+            }
+        });
+        utils.value("momentApi", window.moment);
+        utils.filter("toMoment", function(momentApi){
+            return function(data){
+                return momentApi(data).fromNow();
+            }
+        });
+
+
+        var bugTrackerApp = angular.module("bugTrackerApp", ["utils"]);
+
 
         bugTrackerApp.factory("Bug", function(){
             function Bug(defaults){
                 defaults = defaults || {};
                 this.id = defaults.id || 0;
                 this.title = defaults.title || '';
+                this.createdAt = defaults.createdAt || new Date();
                 this.isClosed = defaults.isClosed || false;
             }
             Bug.prototype.toggle = function(){
@@ -70,6 +92,24 @@
             };
             return Bug;
         });
+
+
+        //Bug as a 'value'
+        /*
+        bugTrackerApp.value("Bug", (function(){
+            function Bug(defaults){
+                    defaults = defaults || {};
+                    this.id = defaults.id || 0;
+                    this.title = defaults.title || '';
+                    this.isClosed = defaults.isClosed || false;
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+            return Bug;
+        })());*/
+
+
 
         /*bugTrackerApp.factory("bugStorage", function(Bug){
             var storage = window.localStorage;
@@ -143,6 +183,7 @@
                 }).length;
             }
         });
+
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -182,7 +223,7 @@
                         ng-repeat="bug in bugs | filter:searchBug"
                         ng-click="toggleStatus(bug)"
                         ng-class="{closed : bug.isClosed}"
-                    >{{bug.title}}</li>
+                    >{{bug.title | trimText:40}} - {{bug.createdAt | toMoment}}</li>
                 </ol>
             </form>
         </div>
