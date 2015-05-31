@@ -128,6 +128,7 @@
                 });
             }*/
 
+            /*
             this.getAll = function(){
                 var deferred = $q.defer();
                 $http.get("http://localhost:9999/bugs")
@@ -140,6 +141,32 @@
                         //},5000);
                     });
                 return deferred.promise;
+            };
+            */
+            this.getAll = function(){
+
+                return $http.get("http://localhost:9999/bugs")
+                    .then(function(response){
+                        return response.data.map(function(obj){
+                            return new Bug(obj);
+                        });
+                    });
+            };
+            this.save = function(bug){
+                var deferred = $q.defer();
+                if (bug.id === 0){
+                    //new bug
+                    $http.post("http://localhost:9999/bugs", bug)
+                        .then(function (response){
+                            deferred.resolve(new Bug(response.data));
+                        });
+                } else {
+                    $http.put("http://localhost:9999/bugs/" + bug.id, bug)
+                        .then(function(response){
+                            deferred.resolve(new Bug(response.data));
+                        });
+                }
+                return deferred.promise;
             }
 
         })
@@ -150,12 +177,12 @@
             });
 
             $scope.addBug = function(newBugTitle){
-                var newBug = bugStorage.save(new Bug({title : newBugTitle}));
+                var newBug = bugService.save(new Bug({title : newBugTitle}));
                 $scope.bugs.push(newBug);
             };
             $scope.toggleStatus = function(bug){
                 bug.toggle();
-                bugStorage.save(bug);
+                bugService.save(bug);
             };
             $scope.removeClosed = function(){
                 for(var i=$scope.bugs.length - 1; i>=0; i--){

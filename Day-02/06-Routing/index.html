@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Routing Demo</title>
+    <script src="angular.min.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var myApp = angular.module("myApp", ["ngRoute"]);
+        myApp.config(function($routeProvider){
+            $routeProvider
+                .when("/products", {
+                    //template : "<h2>Products</h2>"
+                    templateUrl : "productsTemplate.html",
+                    controller : "productsController"
+                })
+                .when("/products/:productId",{
+                    templateUrl : "productInfoTemplate.html",
+                    controller  : "productInfoController"
+                })
+                .when("/customers",{
+                    //template : "<h2>Customers</h2>"
+                templateUrl : "customersTemplate.html"
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                })
+        });
+        myApp.service("productsService", function(){
+            this.get = function(id){
+                return this.getAll().filter(function(product){ return product.id === id})[0];
+            }
+            this.getAll = function(){
+                return [
+                    {id : 1, name : "Pen", cost : 50, units : 30, desc : "Ab labore nescius tempor ne mandaremus varias ad singulis tractavissent, de labore eiusmod incididunt si cillum hic incididunt ex enim. Ad varias sempiternum. Deserunt velit vidisse, illum o iis fugiat ingeniis ita cernantur instituendarum id singulis, nam aliqua voluptate transferrem in incididunt te quid cupidatat de admodum esse ad doctrina eruditionem, esse fabulas o fabulas "},
+{id : 9, name : "Hen", cost : 90, units : 50, desc : "Cernantur quis irure de quis. Quid ita incurreret, senserit lorem magna nam nisi an si probant e possumus ad et magna voluptatibus. Excepteur quorum tempor consequat, nam cillum fidelissimae. Proident quis enim tempor fugiat ex te ullamco tractavissent, quo ne summis tempor, consequat quae nulla ex elit. Ubi qui nulla anim eram do et nam praesentibus eu enim doctrina sed fabulas nam ut e "},
+{id : 8, name : "Ten", cost : 80, units : 40, desc : "Legam doctrina voluptatibus, ea proident transferrem, aut anim duis aute laboris id aut varias comprehenderit. Senserit tamen fore incididunt aliqua ne te magna velit hic ullamco. Quis non quibusdam. Aut a domesticarum, dolor se ea summis probant, e aut noster varias eram aut anim laboris ex elit eram ut est labore aliqua est fabulas, noster comprehenderit senserit nulla possumus eu magna "},
+{id : 3, name : "Den", cost : 30, units : 90, desc : "Te e illum quibusdam, enim transferrem pariatur sunt excepteur. Occaecat summis dolor est dolor, excepteur amet iudicem. Deserunt adipisicing nam singulis ab an malis elit magna cupidatat, ipsum admodum iis reprehenderit de ipsum singulis e incididunt. Id ipsum o culpa, proident summis dolor pariatur ipsum o cernantur et litteris, eram mentitum voluptate. Quibusdam nulla te nescius transferrem, "}
+                ];
+            };
+        });
+        myApp.controller("productsController", function($scope, productsService){
+            $scope.products = productsService.getAll();
+        });
+        myApp.controller("productInfoController", function($scope, productsService, $routeParams){
+            $scope.product = productsService.get(parseInt($routeParams.productId));
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>My App</h1>
+    <a href="#/products">Products</a> &nbsp; <a href="#/customers">Customers</a>
+    <ng-view></ng-view>
+</body>
+</html>

@@ -23,6 +23,12 @@
       "title": "Eram tempor laboris id voluptate elit commodo, admodum multos cernantur, quid  quo incididunt ab excepteur ubi eram expetendis se quibusdam aliqua iudicem  pariatur, quem do arbitror",
       "createdAt": "2015-05-31T05:33:52.410Z",
       "isClosed": false
+    },
+    {
+      "id": 5,
+      "title": "brand new bug",
+      "createdAt": "2015-05-31T10:06:55.490Z",
+      "isClosed": true
     }
   ]
 }

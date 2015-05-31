@@ -1,0 +1,11 @@
+<style>
+    .cost {
+        color : red;
+        font-weight: bold;
+    }
+</style>
+<h2>{{product.name}}</h2>
+<div class="cost">{{product.cost | currency}}</div>
+<desc>{{product.desc}}</desc>
+<hr>
+<i>There are only {{product.units}} units in stock!!</i>
