@@ -114,13 +114,39 @@
                 storage.removeItem(bug.id);
             }
         });
-        bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage, $http){
-            $scope.bugs = [];
-            var promise = $http.get("http://localhost:9999/bugs");
-            promise.then(function(response){
-                $scope.bugs = response.data.map(function(d){
-                    return new Bug(d);
+        bugTrackerApp.service("bugService", function($http, Bug, $q){
+            //Using Callbacks - not preferable
+            /*this.getAll = function(onResult){
+                var promise = $http.get("http://localhost:9999/bugs");
+                promise.then(function(response){
+                    var result = response.data.map(function(d){
+                        return new Bug(d);
+                    });
+                    if (typeof onResult === "function"){
+                        onResult(result);
+                    }
                 });
+            }*/
+
+            this.getAll = function(){
+                var deferred = $q.defer();
+                $http.get("http://localhost:9999/bugs")
+                    .then(function(response){
+                        var result = response.data.map(function(obj){
+                            return new Bug(obj);
+                        });
+                        //setTimeout(function(){
+                            deferred.resolve(result);
+                        //},5000);
+                    });
+                return deferred.promise;
+            }
+
+        })
+        bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage, bugService){
+            $scope.bugs = [];
+            bugService.getAll().then(function(bugs){
+                $scope.bugs = bugs;
             });
 
             $scope.addBug = function(newBugTitle){
