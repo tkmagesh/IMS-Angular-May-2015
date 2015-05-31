@@ -70,12 +70,8 @@
             };
             return Bug;
         });
-        /*bugStorage
-            - getAll()
-            - save()
-            - remove()
-        */
-        bugTrackerApp.factory("bugStorage", function(Bug){
+
+        /*bugTrackerApp.factory("bugStorage", function(Bug){
             var storage = window.localStorage;
             return {
                 getAll : function(){
@@ -98,6 +94,29 @@
                 remove : function(bug){
                     storage.removeItem(bug.id);
                 }
+            }
+        });*/
+
+        bugTrackerApp.service("bugStorage", function(Bug){
+            var storage = window.localStorage;
+            this.getAll = function(){
+                var result = [];
+                for(var i=0; i<storage.length; i++){
+                    var key = storage.key(i);
+                    var dataAsString = storage.getItem(key);
+                    var dataAsObject = angular.fromJson(dataAsString);
+                    var bug = new Bug(dataAsObject);
+                    result.push(bug);
+                }
+                return result;
+            };
+            this.save = function(bug){
+                if (!bug.id) bug.id = Date.now().toString();
+                storage.setItem(bug.id, angular.toJson(bug));
+                return bug;
+            };
+            this.remove = function(bug){
+                storage.removeItem(bug.id);
             }
         });
         bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage){
